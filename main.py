@@ -3,6 +3,7 @@ import numpy as np
 import os
 import math
 import matplotlib.pylab as plt
+from scipy.stats import kurtosis, skew
 from pandas.plotting import register_matplotlib_converters
 
 def calculateVAR(valuationdate, percentile, binwidth):
@@ -64,10 +65,21 @@ def calculateVAR(valuationdate, percentile, binwidth):
 
     dfoutput = pd.DataFrame(rows, columns = columns)
     outputarray = dfoutput.to_numpy()
-
     var = round(np.percentile(outputarray,percentile * 100),0)
+
+    y = 0
+    n = 0
+    for x in outputarray:
+        if x <= var:
+            y += float(x)
+            n += 1
+    conditionalvar = round(y/n,0)
+
     printstring = 'pv = ' + format(round(flatpv,0),',.0f') + ', 1 month ' + str(100 - (percentile * 100)) 
-    printstring += ', % var = ' + format(var,',.0f') + ', n=' +  format(len(scenarios),'')
+    printstring += '% var = ' + format(var,',.0f') + ', n=' +  format(len(scenarios),'') + '\n'
+    printstring += 'conditional var = ' + format(conditionalvar,',.0f')
+    printstring += ', skew = ' + str(round(float(skew(list(outputarray))),2))
+    printstring += ', kurtosis = ' + str(round(float(kurtosis(list(outputarray))),2)) 
 
     print (printstring)
 
@@ -94,7 +106,7 @@ def calculateVAR(valuationdate, percentile, binwidth):
 
     plt.bar(bin_edges[:-1], hist, width = binwidth, color = 'lightslategrey', edgecolor = 'slategrey')
     plt.bar(bin_edges[0:plotpoint], hist[0:plotpoint], width = binwidth, color = 'red', edgecolor = 'firebrick')
-    plt.title(printstring)
+    plt.suptitle(printstring)
     plt.show()
 
 
