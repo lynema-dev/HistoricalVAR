@@ -5,5 +5,4 @@ Calculation of historical 1-month Value at Risk of a cashflow profile discounted
 
 
 ![](Figure_1.png)
-
 ![](Figure_2.png)
