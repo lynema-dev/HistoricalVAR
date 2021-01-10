@@ -3,7 +3,7 @@ import numpy as np
 import os
 import math
 import matplotlib.pylab as plt
-from scipy.stats import kurtosis, skew
+from scipy.stats import kurtosis, skew, probplot, stats
 from pandas.plotting import register_matplotlib_converters
 
 def calculateVAR(valuationdate, percentile, binwidth):
@@ -69,10 +69,12 @@ def calculateVAR(valuationdate, percentile, binwidth):
 
     y = 0
     n = 0
+    probplt = []
     for x in outputarray:
         if x <= var:
             y += float(x)
             n += 1
+        probplt.append(float(x))
     conditionalvar = round(y/n,0)
 
     printstring = 'pv = ' + format(round(flatpv,0),',.0f') + ', 1 month ' + str(100 - (percentile * 100)) 
@@ -107,6 +109,9 @@ def calculateVAR(valuationdate, percentile, binwidth):
     plt.bar(bin_edges[:-1], hist, width = binwidth, color = 'lightslategrey', edgecolor = 'slategrey')
     plt.bar(bin_edges[0:plotpoint], hist[0:plotpoint], width = binwidth, color = 'red', edgecolor = 'firebrick')
     plt.suptitle(printstring)
+    plt.show()
+
+    probplot(probplt, plot=plt)
     plt.show()
 
 
